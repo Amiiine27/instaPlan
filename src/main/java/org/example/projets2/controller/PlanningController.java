@@ -39,6 +39,9 @@ public class PlanningController implements Initializable {
 
     private final CreneauDao creneauDao = new JdbcCreneauDao();
 
+    @FXML
+    private Button manageSallesButton;
+
     // Référence au calendrier CalendarFX qui contiendra les entrées
     private Calendar userCalendar;
 
@@ -49,6 +52,12 @@ public class PlanningController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // 1) Afficher d'abord le message de bienvenue
         displayWelcomeUser();
+
+        // Vérifier si l'utilisateur est admin pour afficher le bouton de gestion des salles
+        Utilisateur currentUser = Session.getCurrentUser();
+        if (currentUser != null && currentUser.isAdmin()) {
+            manageSallesButton.setVisible(true);
+        }
 
         // 2) Configurer ensuite le CalendarView (création de userCalendar)
         configureCalendarView();
@@ -246,5 +255,23 @@ public class PlanningController implements Initializable {
         System.out.println("\nTotal de créneaux affichés: " + displayedCount);
     }
 
+    @FXML
+    private void onManageSallesClicked() {
+        try {
+            // Charger la vue de gestion des salles
+            Parent root = FXMLLoader.load(getClass().getResource("/org/example/projets2/views/salles-view.fxml"));
 
+            // Créer une nouvelle scène avec cette vue
+            Scene scene = new Scene(root, 1500, 750);
+
+            // Obtenir la fenêtre actuelle et changer sa scène
+            Stage stage = (Stage) manageSallesButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("InstaPlan - Gestion des Salles");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            welcomeLabel.setText("Erreur lors du chargement de la gestion des salles : " + e.getMessage());
+        }
+    }
 }

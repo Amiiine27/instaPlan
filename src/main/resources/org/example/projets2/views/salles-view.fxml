@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.projets2.controller.SallesController"
+            stylesheets="@../style/salles.css">
+
+    <!-- Barre du haut avec titre et bouton retour -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
+            <Label text="Gestion des Salles" styleClass="title-label"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" text="Retour au Planning" onAction="#onBackButtonClicked" styleClass="back-button"/>
+        </HBox>
+    </top>
+
+    <!-- Corps principal avec tableau et formulaire -->
+    <center>
+        <SplitPane dividerPositions="0.6">
+            <!-- Côté gauche : tableau des salles -->
+            <VBox spacing="10" style="-fx-padding: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Liste des salles" styleClass="form-title"/>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="searchField" promptText="Rechercher..." prefWidth="200" styleClass="search-field"/>
+                </HBox>
+
+                <TableView fx:id="sallesTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="nomColumn" text="Nom" prefWidth="150"/>
+                        <TableColumn fx:id="capaciteColumn" text="Capacité" prefWidth="100"/>
+                        <TableColumn fx:id="equipementsColumn" text="Équipements" prefWidth="200"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="addButton" text="Nouvelle Salle" onAction="#onAddButtonClicked"/>
+                    <Button fx:id="deleteButton" text="Supprimer" onAction="#onDeleteButtonClicked" styleClass="delete-button"/>
+                </HBox>
+            </VBox>
+
+            <!-- Côté droit : formulaire -->
+            <VBox spacing="15" style="-fx-padding: 15;" styleClass="form-container">
+                <Label text="Détails de la salle" styleClass="form-title"/>
+
+                <GridPane vgap="10" hgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="100" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+
+                    <Label text="Nom:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="nomField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Capacité:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Spinner fx:id="capaciteSpinner" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Équipements:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                        <CheckBox fx:id="projecteurCheck" text="Projecteur"/>
+                        <CheckBox fx:id="ordinateursCheck" text="Ordinateurs"/>
+                        <CheckBox fx:id="tableauxCheck" text="Tableaux interactifs"/>
+                        <CheckBox fx:id="climatisationCheck" text="Climatisation"/>
+                    </VBox>
+                </GridPane>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="resetButton" text="Réinitialiser" onAction="#onResetButtonClicked" styleClass="reset-button"/>
+                    <Button fx:id="saveButton" text="Enregistrer" onAction="#onSaveButtonClicked"/>
+                </HBox>
+            </VBox>
+        </SplitPane>
+    </center>
+</BorderPane>

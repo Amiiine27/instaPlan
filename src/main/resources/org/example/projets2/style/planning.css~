@@ -13,7 +13,7 @@
 
 /* Style pour le bouton déconnexion */
 .salles-button {
-    -fx-background-color: #4e54c8;  /* rouge vif */
+    -fx-background-color: #3ce745;  /* rouge vif */
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-radius: 5;
@@ -21,6 +21,6 @@
     -fx-cursor: hand;
 }
 .salles-button:hover {
-    -fx-background-color: #3b40a0;  /* rouge plus sombre au survol */
+    -fx-background-color: #2da933;  /* rouge plus sombre au survol */
 }
 

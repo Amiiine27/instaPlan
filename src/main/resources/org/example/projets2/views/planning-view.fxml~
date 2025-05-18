@@ -21,8 +21,7 @@
 
             <!-- Nouveau bouton pour la gestion des salles, initialement invisible -->
             <Button fx:id="manageSallesButton" text="Gérer les Salles"
-                    onAction="#onManageSallesClicked" visible="false"
-                    styleClass="salles-button"/>
+                    onAction="#onManageSallesClicked" visible="false"/>
 
             <Button fx:id="logoutButton"
                     text="Déconnexion"

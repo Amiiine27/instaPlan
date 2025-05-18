@@ -5,6 +5,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
+
+<?import com.calendarfx.view.CalendarView?>
 <BorderPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.projets2.controller.PlanningController"
@@ -20,11 +22,14 @@
                         styleClass="disconnect-button"/>
             </children>
         </HBox>
+
+        <Label fx:id="welcomeLabel" text="Planning — Connexion réussie ! Bienvenue"
+                      style="-fx-font-size:24px; -fx-text-fill:black;"/>
     </top>
 
     <!-- Zone centrale -->
+
     <center>
-        <Label fx:id="welcomeLabel" text="Planning — Connexion réussie ! Bienvenue"
-               style="-fx-font-size:24px; -fx-text-fill:black;"/>
+        <CalendarView fx:id="calendarView" />
     </center>
 </BorderPane>

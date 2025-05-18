@@ -123,8 +123,8 @@
         </dependency>
         <dependency>
             <groupId>com.calendarfx</groupId>
-            <artifactId>view</artifactId>
-            <version>11.12.7</version>
+            <artifactId>calendarfx</artifactId>
+            <version>11.8.0</version>
         </dependency>
     </dependencies>
 

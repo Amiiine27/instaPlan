@@ -1,0 +1,143 @@
+/* notifications.css - Styles pour la vue des notifications */
+
+/* Fond de la page */
+.root {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Titre principal */
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Sous-titre */
+.form-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 10 0;
+}
+
+/* Labels dans le formulaire */
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+    -fx-font-weight: bold;
+}
+
+/* Liste des notifications */
+.notifications-list {
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #e0e0e0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+}
+
+.notifications-list .list-cell {
+    -fx-padding: 10;
+    -fx-background-color: transparent;
+}
+
+.notifications-list .list-cell:filled:selected {
+    -fx-background-color: #e3e5ff;
+}
+
+.notifications-list .list-cell:filled:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Conteneur de détails */
+.detail-container {
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #e0e0e0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+}
+
+/* Zone de texte pour le message */
+.text-area {
+    -fx-background-color: transparent;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.text-area .content {
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 5;
+}
+
+/* Styles pour les différents types de notifications */
+.notification-info {
+    -fx-border-left: 5px solid #3498db;
+}
+
+.notification-creation {
+    -fx-border-left: 5px solid #2ecc71;
+}
+
+.notification-modification {
+    -fx-border-left: 5px solid #f39c12;
+}
+
+.notification-annulation {
+    -fx-border-left: 5px solid #e74c3c;
+}
+
+.notification-conflit {
+    -fx-border-left: 5px solid #9b59b6;
+}
+
+.notification-unread {
+    -fx-font-weight: bold;
+    -fx-background-color: #f8f9fa;
+}
+
+/* ComboBox et ToggleButton */
+.combo-box, .toggle-button {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-padding: 5 10;
+    -fx-background-color: white;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #4e54c8;
+    -fx-text-fill: white;
+}
+
+/* Boutons */
+.button {
+    -fx-background-color: #4e54c8;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #3b40a0;
+}
+
+.delete-button {
+    -fx-background-color: #e74c3c;
+}
+
+.delete-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.back-button {
+    -fx-background-color: #888888;
+}
+
+.back-button:hover {
+    -fx-background-color: #666666;
+}

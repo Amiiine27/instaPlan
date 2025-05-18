@@ -1,0 +1,4 @@
+package org.example.projets2.model;
+
+public class Notification {
+}

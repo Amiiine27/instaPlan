@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.projets2.controller.NotificationsController"
+            stylesheets="@../style/notifications.css">
+
+    <!-- Barre du haut avec titre et bouton retour -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
+            <Label text="Mes Notifications" styleClass="title-label"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" text="Retour au Planning" onAction="#onBackButtonClicked" styleClass="back-button"/>
+        </HBox>
+    </top>
+
+    <!-- Corps principal avec liste des notifications -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Liste des notifications" styleClass="form-title"/>
+                <Region HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="filterTypeComboBox" promptText="Filtrer par type" prefWidth="150"/>
+                <ToggleButton fx:id="showOnlyUnreadToggle" text="Non lues uniquement" selected="false"/>
+            </HBox>
+
+            <ListView fx:id="notificationsListView" VBox.vgrow="ALWAYS" styleClass="notifications-list"/>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button fx:id="markAllAsReadButton" text="Marquer tout comme lu" onAction="#onMarkAllAsReadClicked"/>
+                <Button fx:id="deleteSelectedButton" text="Supprimer sélection" onAction="#onDeleteSelectedClicked" styleClass="delete-button"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- Panneau de détail de la notification sélectionnée -->
+    <right>
+        <VBox spacing="15" style="-fx-padding: 15; -fx-min-width: 300;" styleClass="detail-container">
+            <Label text="Détails de la notification" styleClass="form-title"/>
+
+            <GridPane vgap="10" hgap="10">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="80" />
+                    <ColumnConstraints hgrow="ALWAYS" />
+                </columnConstraints>
+
+                <Label text="Type:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <Label fx:id="typeLabel" text="" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Date:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <Label fx:id="dateLabel" text="" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Titre:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <Label fx:id="titreLabel" text="" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <Label text="Message:" styleClass="form-label"/>
+            <TextArea fx:id="messageTextArea" editable="false" wrapText="true" prefHeight="150"/>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button fx:id="markAsReadButton" text="Marquer comme lu" onAction="#onMarkAsReadClicked"/>
+                <Button fx:id="deleteButton" text="Supprimer" onAction="#onDeleteClicked" styleClass="delete-button"/>
+            </HBox>
+
+            <!-- Bouton pour voir le créneau associé (si applicable) -->
+            <Button fx:id="viewCreneauButton" text="Voir le créneau" onAction="#onViewCreneauClicked" visible="false"/>
+        </VBox>
+    </right>
+</BorderPane>

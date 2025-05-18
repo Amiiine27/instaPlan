@@ -19,9 +19,14 @@
                    style="-fx-font-size:24px; -fx-text-fill:black;"/>
             <Region HBox.hgrow="ALWAYS" />
 
+            <Button fx:id="notificationsButton" text="Notifications"
+                    onAction="#onNotificationsClicked"
+                    styleClass="notifications-button"/>
+
             <!-- Bouton pour la gestion des créneaux, initialement invisible -->
             <Button fx:id="manageCreneauxButton" text="Gérer les Créneaux"
-                    onAction="#onManageCreneauxClicked" visible="false"/>
+                    onAction="#onManageCreneauxClicked" visible="false"
+                    styleClass="creneaux-button"/>
 
             <!-- Bouton pour la gestion des cours, initialement invisible -->
             <Button fx:id="manageCoursButton" text="Gérer les Cours"

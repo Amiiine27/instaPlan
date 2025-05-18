@@ -741,46 +741,4 @@ public class CreneauxController implements Initializable {
                 if (!oldDate.equals(date)) {
                     detailsModification.append("Date modifiée. ");
                 }
-                if (!oldDebut.equals(debut) || !oldFin.equals(oldFin)) {
-                    detailsModification.append("Horaire modifié. ");
-                }
-                if (!oldSalle.equals(salle)) {
-                    detailsModification.append("Salle modifiée. ");
-                }
-                if (!oldCours.equals(cours)) {
-                    detailsModification.append("Cours modifié. ");
-
-                    // Si l'enseignant a changé, notifier l'ancien et le nouveau
-                    if (!oldCours.getEnseignant().equals(cours.getEnseignant())) {
-                        // Notifier l'ancien enseignant
-                        notificationService.notifierAnnulationCreneau(currentCreneau, oldCours.getEnseignant());
-
-                        // Notifier le nouvel enseignant
-                        notificationService.notifierCreationCreneau(currentCreneau, cours.getEnseignant());
-                    }
-                }
-
-                // Notifier l'enseignant du cours des modifications
-                notificationService.notifierModificationCreneau(
-                        currentCreneau,
-                        cours.getEnseignant(),
-                        detailsModification.toString()
-                );
-
-                // Notifier tous les étudiants
-                notificationService.notifierTousEtudiants(currentCreneau);
-
-                // Rafraîchir la table
-                creneauxTable.refresh();
-                showAlert("Succès", "Le créneau a été mis à jour avec succès et les notifications ont été envoyées.");
-            }
-
-            // Réinitialiser le formulaire après l'opération
-            resetForm();
-            creneauxTable.getSelectionModel().clearSelection();
-        } catch (SQLException e) {
-            showAlert("Erreur", "Impossible de sauvegarder le créneau: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-}
+                if (!oldDebut.equals(debut) || !oldFin.equals(

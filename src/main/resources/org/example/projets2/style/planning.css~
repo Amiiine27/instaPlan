@@ -35,27 +35,3 @@
 .cours-button:hover {
     -fx-background-color: #3b8244;  /* rouge plus sombre au survol */
 }
-/* Style pour le bouton déconnexion */
-.creneaux-button {
-    -fx-background-color: #b17c00;  /* rouge vif */
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 5;
-    -fx-padding: 5 15;
-    -fx-cursor: hand;
-}
-.creneaux-button:hover {
-    -fx-background-color: #6b4900;  /* rouge plus sombre au survol */
-}
-/* Style pour le bouton déconnexion */
-.notifications-button {
-    -fx-background-color: #ff59eb;  /* rouge vif */
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 5;
-    -fx-padding: 5 15;
-    -fx-cursor: hand;
-}
-.notifications-button:hover {
-    -fx-background-color: #8600ad;  /* rouge plus sombre au survol */
-}

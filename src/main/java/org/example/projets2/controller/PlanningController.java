@@ -48,6 +48,8 @@ public class PlanningController implements Initializable {
 
     @FXML private Button manageCreneauxButton;
 
+    @FXML private Button notificationsButton;
+
     /**
      * Méthode appelée par JavaFX juste après le chargement du FXML.
      */
@@ -316,6 +318,26 @@ public class PlanningController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             welcomeLabel.setText("Erreur lors du chargement de la gestion des créneaux : " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onNotificationsClicked() {
+        try {
+            // Charger la vue des notifications
+            Parent root = FXMLLoader.load(getClass().getResource("/org/example/projets2/views/notifications-view.fxml"));
+
+            // Créer une nouvelle scène avec cette vue
+            Scene scene = new Scene(root, 1500, 750);
+
+            // Obtenir la fenêtre actuelle et changer sa scène
+            Stage stage = (Stage) notificationsButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("InstaPlan - Notifications");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            welcomeLabel.setText("Erreur lors du chargement des notifications : " + e.getMessage());
         }
     }
 }

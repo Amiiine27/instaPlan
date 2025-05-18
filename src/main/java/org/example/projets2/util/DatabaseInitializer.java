@@ -22,7 +22,8 @@ public class DatabaseInitializer {
             "/db/init_utilisateur.sql",
             "/db/init_cours.sql",
             "/db/init_salle.sql",
-            "/db/init_creneau.sql"
+            "/db/init_creneau.sql",
+            "/db/init_notification.sql"  // Ajout du script pour les notifications
     );
 
     /**

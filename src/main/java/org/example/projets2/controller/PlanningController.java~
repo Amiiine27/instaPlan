@@ -48,6 +48,8 @@ public class PlanningController implements Initializable {
 
     @FXML private Button manageCreneauxButton;
 
+    @FXML private Button notificationsButton;
+
     /**
      * Méthode appelée par JavaFX juste après le chargement du FXML.
      */
@@ -298,4 +300,24 @@ public class PlanningController implements Initializable {
             e.printStackTrace();
             welcomeLabel.setText("Erreur lors du chargement de la gestion des cours : " + e.getMessage());
         }
-    }}
+    }
+    @FXML
+    private void onManageCreneauxClicked() {
+        try {
+            // Charger la vue de gestion des créneaux
+            Parent root = FXMLLoader.load(getClass().getResource("/org/example/projets2/views/creneaux-view.fxml"));
+
+            // Créer une nouvelle scène avec cette vue
+            Scene scene = new Scene(root, 1500, 750);
+
+            // Obtenir la fenêtre actuelle et changer sa scène
+            Stage stage = (Stage) manageCreneauxButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("InstaPlan - Gestion des Créneaux");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            welcomeLabel.setText("Erreur lors du chargement de la gestion des créneaux : " + e.getMessage());
+        }
+    }
+}

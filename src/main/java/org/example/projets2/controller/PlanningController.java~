@@ -246,5 +246,5 @@ public class PlanningController implements Initializable {
         System.out.println("\nTotal de créneaux affichés: " + displayedCount);
     }
 
-
+    
 }

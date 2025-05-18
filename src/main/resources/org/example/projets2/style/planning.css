@@ -1,0 +1,12 @@
+/* Style pour le bouton déconnexion */
+.disconnect-button {
+    -fx-background-color: #e74c3c;  /* rouge vif */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 5 15;
+    -fx-cursor: hand;
+}
+.disconnect-button:hover {
+    -fx-background-color: #c0392b;  /* rouge plus sombre au survol */
+}

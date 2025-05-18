@@ -1,0 +1,81 @@
+package org.example.projets2.dao;
+
+import org.example.projets2.model.Utilisateur;
+import org.example.projets2.util.Database;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.sql.*;
+
+public class JdbcUtilisateurDao implements UtilisateurDao {
+
+    private static final String INSERT_SQL =
+            "INSERT INTO Utilisateur(lastName, firstName, email, password) VALUES(?,?,?,?)";
+    private static final String SELECT_BY_EMAIL =
+            "SELECT id, lastName, firstName, email, password FROM Utilisateur WHERE email = ?";
+    private static final String SELECT_BY_ID =
+            "SELECT id, lastName, firstName, email, password FROM Utilisateur WHERE id = ?";
+
+    @Override
+    public void create(Utilisateur u) throws SQLException {
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(
+                     INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) { // Statement.RETURN_GENERATED_KEYS : indique qu’on souhaite récupérer la ou les clés auto-générées par la base (ici, la colonne id).
+
+            ps.setString(1, u.getLastName());
+            ps.setString(2, u.getFirstName());
+            ps.setString(3, u.getEmail());
+            // Hachage du mot de passe avant insertion
+            String hashedPassword = BCrypt.hashpw(u.getPassword(), BCrypt.gensalt());
+            ps.setString(4, hashedPassword);
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    u.setId(rs.getInt(1));
+                }
+            }
+        }
+    }
+
+    @Override
+    public Utilisateur findByEmail(String email) throws SQLException {
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(SELECT_BY_EMAIL)) {
+
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Utilisateur u = new Utilisateur();
+                    u.setId(rs.getInt("id"));
+                    u.setLastName(rs.getString("lastName"));
+                    u.setFirstName(rs.getString("firstName"));
+                    u.setEmail(rs.getString("email"));
+                    u.setPassword(rs.getString("password"));
+                    return u;
+                }
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public Utilisateur findById(int id) throws SQLException {
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(SELECT_BY_ID)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Utilisateur u = new Utilisateur();
+                    u.setId(rs.getInt("id"));
+                    u.setLastName(rs.getString("lastName"));
+                    u.setFirstName(rs.getString("firstName"));
+                    u.setEmail(rs.getString("email"));
+                    u.setPassword(rs.getString("password"));
+                    return u;
+                }
+                return null;
+            }
+        }
+    }
+}

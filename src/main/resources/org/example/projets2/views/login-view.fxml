@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/8"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.projets2.controller.LoginController"
+           stylesheets="@../style/login.css">
+    <children>
+        <VBox fx:id="rootBox" maxWidth="Infinity" prefWidth="500" spacing="10" alignment="CENTER">
+            <children>
+                <Label text="InstaPlan" styleClass="title-label"/>
+
+                <TextField fx:id="emailField"
+                           promptText="Adresse email"
+                           prefWidth="500" maxWidth="500"/>
+
+                <!-- Champ mot de passe avec œil superposé -->
+                <StackPane fx:id="passwordContainer" prefWidth="500" maxWidth="500">
+                    <children>
+                        <PasswordField fx:id="passwordField"
+                                       promptText="Mot de passe"
+                                       prefWidth="500" maxWidth="500"/>
+                        <Button fx:id="revealButton"
+                                text="👁"
+                                onAction="#onRevealButtonClicked"
+                                styleClass="eye-button"
+                                StackPane.alignment="CENTER_RIGHT"
+                                />
+                    </children>
+                </StackPane>
+
+                <Label fx:id="messageLabel"/>
+
+                <Button fx:id="loginButton"
+                        text="Se connecter"
+                        onAction="#onLoginButtonClicked"
+                        prefWidth="500"
+                        maxWidth="500"
+                        defaultButton="true"/>
+
+                <Button fx:id="forgotPasswordButton"
+                       text="Mot de passe oublié ?"
+                       onAction="#onForgotPasswordClicked"
+                        prefWidth="500"
+                        maxWidth="500"/>
+
+            </children>
+        </VBox>
+    </children>
+</StackPane>

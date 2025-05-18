@@ -1,0 +1,89 @@
+/* src/main/resources/org/example/projets2/style/login.css */
+
+/* Fond animé (GIF) */
+.root {
+    -fx-background-image: url("../assets/bcg.gif");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: 1500 750;
+}
+
+/* Formulaire centré avec ombre portée */
+#rootBox {
+    -fx-alignment: center;
+    -fx-spacing: 15;
+    /* Fond transparent pour laisser voir le GIF */
+    -fx-background-color: transparent;
+    /* Ombre pour détacher du fond */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 50, 0, 0, 4);
+    -fx-padding: 30;
+}
+
+/* Titre principal */
+.title-label {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 96px;
+    -fx-padding: 0 0 80 0;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    /* Petite ombre texte pour mieux contraster */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.9), 15, 0, 0, 2);
+}
+
+/* TextField et PasswordField réduits */
+.text-field, .password-field {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-padding: 8 12;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
+}
+
+/* Boutons */
+.button {
+    -fx-background-color: #4e54c8;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: #3b40a0;
+}
+
+.login-button {
+    -fx-pref-width: 100%;
+}
+
+
+/* Liens */
+.hyperlink {
+    -fx-text-fill: #000000;
+    -fx-font-size: 12px;
+
+}
+.hyperlink:hover {
+    -fx-underline: false;
+    -fx-text-fill: #ddd;
+}
+
+/* Message d'erreur/statut */
+#messageLabel {
+    -fx-text-fill: #e74c3c;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 12px;
+}
+
+.eye-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8;
+    -fx-cursor: hand;
+    -fx-text-fill: "#000000";
+}
+.eye-button:hover {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}

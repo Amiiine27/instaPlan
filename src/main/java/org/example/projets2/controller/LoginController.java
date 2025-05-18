@@ -1,0 +1,127 @@
+package org.example.projets2.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import org.example.projets2.service.AuthService;
+import org.example.projets2.exception.AuthenticationException;
+import org.example.projets2.model.Utilisateur;
+import org.example.projets2.util.Session;
+
+import java.io.IOException;
+
+public class LoginController {
+
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
+    @FXML private Button revealButton;
+    @FXML private Button loginButton;
+    @FXML private Hyperlink forgotPasswordLink;
+    @FXML private Button registerButton;
+    @FXML private Label messageLabel;
+    @FXML private StackPane passwordContainer;
+
+    private TextField visiblePasswordField;
+    private boolean passwordVisible = false;
+
+    private final AuthService authService = new AuthService();
+
+    /**
+     * Méthode appelée lors du clic sur le bouton "Se connecter".
+     */
+    @FXML
+    private void onLoginButtonClicked() throws AuthenticationException {
+        String email = emailField.getText();
+        String pwd   = passwordField.getText();
+
+        // Pour l'instant, simple validation non vide
+        if (email.isEmpty() || pwd.isEmpty()) {
+            messageLabel.setText("Email et mot de passe obligatoires.");
+            return;
+        }
+
+        try {
+            // 1) Authentifier
+            Utilisateur user = authService.login(email, pwd);
+
+            // 2) Stocker l'utilisateur en session
+            Session.setCurrentUser(user);
+
+            // 3) Succès → navigation
+            messageLabel.setText("Connexion réussie !");
+            System.out.println("Session user = " + Session.getCurrentUser());
+            loadPlanningView();
+
+        } catch (AuthenticationException e) {
+            // 4) Échec métier → afficher message clair
+            messageLabel.setText(e.getMessage());
+        }
+    }
+
+    /**
+     * Bascule l'affichage du mot de passe ( PasswordField ↔ TextField ).
+     */
+    @FXML
+    private void onRevealButtonClicked() {
+        if (!passwordVisible) {
+            // Création du champ visible s'il n'existe pas
+            if (visiblePasswordField == null) {
+                visiblePasswordField = new TextField();
+                visiblePasswordField.setPrefWidth(passwordField.getPrefWidth());
+                visiblePasswordField.setPromptText(passwordField.getPromptText());
+                // Synchroniser la saisie
+                visiblePasswordField.textProperty()
+                        .addListener((obs, old, val) -> passwordField.setText(val));
+            }
+            // Copier le texte actuel
+            visiblePasswordField.setText(passwordField.getText());
+            // Remplacer dans le container
+            passwordContainer.getChildren().set(0, visiblePasswordField);
+            passwordVisible = true;
+
+        } else {
+            // Reprendre le texte saisi
+            passwordField.setText(visiblePasswordField.getText());
+            // Remettre le PasswordField
+            passwordContainer.getChildren().set(0, passwordField);
+            passwordVisible = false;
+        }
+    }
+
+    /**
+     * Ouvre la vue Planning (placeholder).
+     */
+    private void loadPlanningView() {
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/org/example/projets2/views/planning-view.fxml")
+            );
+            // Créer la scène en 800×600
+            Scene scene = new Scene(root, 1500, 750);
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("InstaPlan - Planning");
+        } catch (IOException e) {
+            e.printStackTrace();
+            messageLabel.setText("Erreur lors du chargement du planning.");
+        }
+    }
+
+    @FXML
+    private void onForgotPasswordClicked() {
+        messageLabel.setText("Fonctionnalité « Mot de passe oublié » à venir.");
+    }
+
+    @FXML
+    private void onRegisterButtonClicked() {
+        messageLabel.setText("Fonctionnalité « Inscription » à venir.");
+    }
+}

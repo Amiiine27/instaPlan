@@ -1,0 +1,25 @@
+package org.example.projets2.model;
+
+/**
+ * Représente un utilisateur tel que défini dans la table SQL Utilisateur.
+ */
+public class Utilisateur {
+    private int id;
+    private String lastName;
+    private String firstName;
+    private String email;
+    private String password;
+
+    /** Constructeur vide nécessaire au DAO. */
+    public Utilisateur() { }
+
+    /** Constructeur pour créer un nouvel utilisateur (avant insertion). */
+    public Utilisateur(String lastName, String firstName, String email, String password) {
+        this.lastName  = lastName;
+        this.firstName = firstName;
+        this.email     = email;
+        this.password  = password;
+    }
+
+    // Getters et setters...
+}

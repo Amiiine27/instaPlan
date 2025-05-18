@@ -23,4 +23,15 @@
 .salles-button:hover {
     -fx-background-color: #3b40a0;  /* rouge plus sombre au survol */
 }
-
+/* Style pour le bouton déconnexion */
+.cours-button {
+    -fx-background-color: #4ec882;  /* rouge vif */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 5 15;
+    -fx-cursor: hand;
+}
+.cours-button:hover {
+    -fx-background-color: #3b8244;  /* rouge plus sombre au survol */
+}

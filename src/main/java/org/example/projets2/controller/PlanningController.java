@@ -44,6 +44,9 @@ public class PlanningController implements Initializable {
 
     // Référence au calendrier CalendarFX qui contiendra les entrées
     private Calendar userCalendar;
+    @FXML private Button manageCoursButton;
+
+    @FXML private Button manageCreneauxButton;
 
     /**
      * Méthode appelée par JavaFX juste après le chargement du FXML.
@@ -57,6 +60,8 @@ public class PlanningController implements Initializable {
         Utilisateur currentUser = Session.getCurrentUser();
         if (currentUser != null && currentUser.isAdmin()) {
             manageSallesButton.setVisible(true);
+            manageCoursButton.setVisible(true);
+            manageCreneauxButton.setVisible(true);
         }
 
         // 2) Configurer ensuite le CalendarView (création de userCalendar)
@@ -272,6 +277,45 @@ public class PlanningController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             welcomeLabel.setText("Erreur lors du chargement de la gestion des salles : " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onManageCoursClicked() {
+        try {
+            // Charger la vue de gestion des cours
+            Parent root = FXMLLoader.load(getClass().getResource("/org/example/projets2/views/cours-view.fxml"));
+
+            // Créer une nouvelle scène avec cette vue
+            Scene scene = new Scene(root, 1500, 750);
+
+            // Obtenir la fenêtre actuelle et changer sa scène
+            Stage stage = (Stage) manageCoursButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("InstaPlan - Gestion des Cours");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            welcomeLabel.setText("Erreur lors du chargement de la gestion des cours : " + e.getMessage());
+        }
+    }
+    @FXML
+    private void onManageCreneauxClicked() {
+        try {
+            // Charger la vue de gestion des créneaux
+            Parent root = FXMLLoader.load(getClass().getResource("/org/example/projets2/views/creneaux-view.fxml"));
+
+            // Créer une nouvelle scène avec cette vue
+            Scene scene = new Scene(root, 1500, 750);
+
+            // Obtenir la fenêtre actuelle et changer sa scène
+            Stage stage = (Stage) manageCreneauxButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("InstaPlan - Gestion des Créneaux");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            welcomeLabel.setText("Erreur lors du chargement de la gestion des créneaux : " + e.getMessage());
         }
     }
 }

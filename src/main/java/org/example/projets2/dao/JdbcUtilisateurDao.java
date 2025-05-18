@@ -6,6 +6,8 @@ import org.example.projets2.util.Database;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JdbcUtilisateurDao implements UtilisateurDao {
 
@@ -17,6 +19,8 @@ public class JdbcUtilisateurDao implements UtilisateurDao {
             "SELECT id, lastName, firstName, email, password, role FROM Utilisateur WHERE id = ?";
     private static final String DELETE_SQL =
             "DELETE FROM Utilisateur WHERE id = ?";
+    private static final String SELECT_ALL =
+            "SELECT id, lastName, firstName, email, password, role FROM Utilisateur";
 
     @Override
     public void create(Utilisateur u) throws SQLException {
@@ -97,5 +101,32 @@ public class JdbcUtilisateurDao implements UtilisateurDao {
             ps.setInt(1, id);
             ps.executeUpdate();
         }
+    }
+
+    @Override
+    public List<Utilisateur> findAll() throws SQLException {
+        List<Utilisateur> utilisateurs = new ArrayList<>();
+
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(SELECT_ALL);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Utilisateur u = new Utilisateur();
+                u.setId(rs.getInt("id"));
+                u.setLastName(rs.getString("lastName"));
+                u.setFirstName(rs.getString("firstName"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+
+                // Récupérer le rôle et le convertir en enum
+                String roleStr = rs.getString("role");
+                u.setRole(Role.valueOf(roleStr));
+
+                utilisateurs.add(u);
+            }
+        }
+
+        return utilisateurs;
     }
 }

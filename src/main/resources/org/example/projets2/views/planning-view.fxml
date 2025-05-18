@@ -19,6 +19,15 @@
                    style="-fx-font-size:24px; -fx-text-fill:black;"/>
             <Region HBox.hgrow="ALWAYS" />
 
+            <!-- Bouton pour la gestion des créneaux, initialement invisible -->
+            <Button fx:id="manageCreneauxButton" text="Gérer les Créneaux"
+                    onAction="#onManageCreneauxClicked" visible="false"/>
+
+            <!-- Bouton pour la gestion des cours, initialement invisible -->
+            <Button fx:id="manageCoursButton" text="Gérer les Cours"
+                    onAction="#onManageCoursClicked" visible="false"
+                    styleClass="cours-button"/>
+
             <!-- Nouveau bouton pour la gestion des salles, initialement invisible -->
             <Button fx:id="manageSallesButton" text="Gérer les Salles"
                     onAction="#onManageSallesClicked" visible="false"

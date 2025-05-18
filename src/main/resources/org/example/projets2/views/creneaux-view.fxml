@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import java.time.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.projets2.controller.CreneauxController"
+            stylesheets="@../style/creneaux.css">
+
+    <!-- Barre du haut avec titre et bouton retour -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
+            <Label text="Gestion des Créneaux" styleClass="title-label"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" text="Retour au Planning" onAction="#onBackButtonClicked" styleClass="back-button"/>
+        </HBox>
+    </top>
+
+    <!-- Corps principal avec tableau et formulaire -->
+    <center>
+        <SplitPane dividerPositions="0.6">
+            <!-- Côté gauche : tableau des créneaux -->
+            <VBox spacing="10" style="-fx-padding: 10;">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Liste des créneaux" styleClass="form-title"/>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox spacing="5" alignment="CENTER_RIGHT">
+                        <Label text="Filtrer par:"/>
+                        <ComboBox fx:id="filterTypeComboBox" promptText="Type" prefWidth="120"/>
+                        <TextField fx:id="searchField" promptText="Rechercher..." prefWidth="200" styleClass="search-field"/>
+                    </HBox>
+                </HBox>
+
+                <TableView fx:id="creneauxTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+                        <TableColumn fx:id="heureDebutColumn" text="Début" prefWidth="80"/>
+                        <TableColumn fx:id="heureFinColumn" text="Fin" prefWidth="80"/>
+                        <TableColumn fx:id="coursColumn" text="Cours" prefWidth="150"/>
+                        <TableColumn fx:id="enseignantColumn" text="Enseignant" prefWidth="150"/>
+                        <TableColumn fx:id="salleColumn" text="Salle" prefWidth="100"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="addButton" text="Nouveau Créneau" onAction="#onAddButtonClicked"/>
+                    <Button fx:id="deleteButton" text="Supprimer" onAction="#onDeleteButtonClicked" styleClass="delete-button"/>
+                </HBox>
+            </VBox>
+
+            <!-- Côté droit : formulaire -->
+            <VBox spacing="15" style="-fx-padding: 15;" styleClass="form-container">
+                <Label text="Détails du créneau" styleClass="form-title"/>
+
+                <GridPane vgap="10" hgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="100" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+
+                    <Label text="Date:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <DatePicker fx:id="datePicker" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Heure début:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <HBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                        <ComboBox fx:id="heureDebutComboBox" prefWidth="80"/>
+                        <Label text=":" />
+                        <ComboBox fx:id="minuteDebutComboBox" prefWidth="80"/>
+                    </HBox>
+
+                    <Label text="Heure fin:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <HBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                        <ComboBox fx:id="heureFinComboBox" prefWidth="80"/>
+                        <Label text=":" />
+                        <ComboBox fx:id="minuteFinComboBox" prefWidth="80"/>
+                    </HBox>
+
+                    <Label text="Cours:" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="coursComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                    <Label text="Salle:" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="salleComboBox" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                    <Label text="Statut:" styleClass="form-label" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                    <ChoiceBox fx:id="statutChoiceBox" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                    <Label text="Note:" styleClass="form-label" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                    <TextArea fx:id="noteTextArea" GridPane.rowIndex="6" GridPane.columnIndex="1" prefHeight="60"/>
+                </GridPane>
+
+                <VBox spacing="5" styleClass="conflict-container">
+                    <Label text="Vérification des conflits" styleClass="form-subtitle"/>
+                    <Label fx:id="conflictLabel" style="-fx-text-fill: green;" text="Aucun conflit détecté"/>
+                    <Button fx:id="checkConflictsButton" text="Vérifier les conflits" onAction="#onCheckConflictsButtonClicked"/>
+                </VBox>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="resetButton" text="Réinitialiser" onAction="#onResetButtonClicked" styleClass="reset-button"/>
+                    <Button fx:id="saveButton" text="Enregistrer" onAction="#onSaveButtonClicked"/>
+                </HBox>
+            </VBox>
+        </SplitPane>
+    </center>
+</BorderPane>

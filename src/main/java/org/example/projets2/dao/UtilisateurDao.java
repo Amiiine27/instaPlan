@@ -2,6 +2,7 @@ package org.example.projets2.dao;
 
 import org.example.projets2.model.Utilisateur;
 import java.sql.SQLException;
+import java.util.List;
 
 public interface UtilisateurDao {
     /**
@@ -20,4 +21,6 @@ public interface UtilisateurDao {
     Utilisateur findById(int id) throws SQLException;
 
     void delete(int id) throws SQLException;
+
+    List<Utilisateur> findAll() throws SQLException;
 }

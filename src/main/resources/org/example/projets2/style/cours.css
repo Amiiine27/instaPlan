@@ -1,0 +1,122 @@
+/* cours.css - Styles pour la vue de gestion des cours */
+
+/* Fond de la page */
+.root {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Titre principal */
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Tableau des cours */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #e0e0e0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+}
+
+.table-view .column-header {
+    -fx-background-color: #4e54c8;
+    -fx-padding: 10 5;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.table-view .table-row-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 5;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #e3e5ff;
+    -fx-text-fill: #333333;
+}
+
+/* Barre de recherche */
+.search-field {
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #cccccc;
+    -fx-padding: 8 15;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+
+/* Formulaire */
+.form-container {
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #e0e0e0;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+}
+
+.form-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 10 0;
+}
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+}
+
+.text-field, .spinner, .combo-box, .text-area {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-padding: 8 12;
+    -fx-background-color: white;
+}
+
+.text-field:focused, .spinner:focused, .combo-box:focused, .text-area:focused {
+    -fx-border-color: #4e54c8;
+}
+
+.text-area {
+    -fx-background-insets: 0;
+    -fx-background-color: white;
+}
+
+.text-area .content {
+    -fx-background-color: white;
+}
+
+/* Boutons */
+.button {
+    -fx-background-color: #4e54c8;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #3b40a0;
+}
+
+.reset-button {
+    -fx-background-color: #f1f1f1;
+    -fx-text-fill: #333333;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+}
+
+.reset-button:hover {
+    -fx-background-color: #e0e0e0;
+}

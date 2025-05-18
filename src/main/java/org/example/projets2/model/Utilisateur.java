@@ -14,10 +14,10 @@ public class Utilisateur {
     public Utilisateur() { }
 
     /** Constructeur pour créer un nouvel utilisateur (avant insertion). */
-    public Utilisateur(String lastName, String firstName, String email, String password) {
+    public Utilisateur(String lastName, String firstName, String password) {
         this.lastName  = lastName;
         this.firstName = firstName;
-        this.email     = email;
+        this.email     = (firstName + "." +  lastName + "@example.com").toLowerCase();
         this.password  = password;
     }
 

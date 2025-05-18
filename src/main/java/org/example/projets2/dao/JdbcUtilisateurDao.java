@@ -14,6 +14,8 @@ public class JdbcUtilisateurDao implements UtilisateurDao {
             "SELECT id, lastName, firstName, email, password FROM Utilisateur WHERE email = ?";
     private static final String SELECT_BY_ID =
             "SELECT id, lastName, firstName, email, password FROM Utilisateur WHERE id = ?";
+    private static final String DELETE_SQL =
+            "DELETE FROM Utilisateur WHERE id = ?";
 
     @Override
     public void create(Utilisateur u) throws SQLException {
@@ -76,6 +78,15 @@ public class JdbcUtilisateurDao implements UtilisateurDao {
                 }
                 return null;
             }
+        }
+    }
+
+    @Override
+    public void delete(int id) throws SQLException {
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(DELETE_SQL)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
     }
 }

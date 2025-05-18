@@ -18,4 +18,6 @@ public interface UtilisateurDao {
      * Retourne l’utilisateur d’après son identifiant, ou null si absent.
      */
     Utilisateur findById(int id) throws SQLException;
+
+    void delete(int id) throws SQLException;
 }

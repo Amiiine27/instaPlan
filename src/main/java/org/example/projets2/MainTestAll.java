@@ -1,89 +1,125 @@
 package org.example.projets2;
 
-import org.example.projets2.dao.JdbcUtilisateurDao;
-import org.example.projets2.dao.UtilisateurDao;
-import org.example.projets2.exception.AuthenticationException;
-import org.example.projets2.model.Utilisateur;
-import org.example.projets2.service.AuthService;
+import org.example.projets2.dao.*;
+import org.example.projets2.model.*;
 import org.example.projets2.util.DatabaseInitializer;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 public class MainTestAll {
 
     public static void main(String[] args) {
-        // 1. Initialiser la base (crée la table Utilisateur si nécessaire)
-        System.out.println("→ Initialisation de la base…");
+        // 0) Initialisation de la base
         DatabaseInitializer.initialize();
 
-        // 2. Instancier le DAO
-        UtilisateurDao dao = new JdbcUtilisateurDao();
+        // ── Test Utilisateur ───────────────────────────────────────────────────────
+        UtilisateurDao userDao = new JdbcUtilisateurDao();
+        Utilisateur user = new Utilisateur("Doe", "John", "secret");
+        try {
+            userDao.create(user);
+            System.out.println("👤 Utilisateur créé: ID=" + user.getId()
+                    + ", email=" + user.getEmail());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
 
-        // 3. Créer un utilisateur de test
-        Utilisateur u = new Utilisateur(
-                "Martin",
-                "Paul",
-                "paul.martin@example.com",
-                "secret123"
+        // ── Test Cours ───────────────────────────────────────────────────────────
+        CoursDao coursDao = new JdbcCoursDao();
+        Cours cours = new Cours("Mathématiques", user, 90);
+        try {
+            coursDao.create(cours);
+            System.out.println("📚 Cours créé: ID=" + cours.getId()
+                    + ", nom=" + cours.getNom()
+                    + ", enseignant=" + cours.getEnseignant().getFirstName());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Lire et lister
+        try {
+            Cours c1 = coursDao.findById(cours.getId());
+            System.out.println("🔍 findById Cours: " + c1.getNom());
+
+            List<Cours> allCours = coursDao.findAll();
+            System.out.println("📋 findAll Cours (" + allCours.size() + "):");
+            allCours.forEach(c -> System.out.println("   - " + c.getId() + ": " + c.getNom()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // ── Test Salle ───────────────────────────────────────────────────────────
+        SalleDao salleDao = new JdbcSalleDao();
+        Salle salle = new Salle("A101", 30, "Projecteur,Clim");
+        try {
+            salleDao.create(salle);
+            System.out.println("🏫 Salle créée: ID=" + salle.getId()
+                    + ", nom=" + salle.getNom());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        try {
+            Salle s1 = salleDao.findById(salle.getId());
+            System.out.println("🔍 findById Salle: " + s1.getNom());
+
+            List<Salle> allSalles = salleDao.findAll();
+            System.out.println("📋 findAll Salles (" + allSalles.size() + "):");
+            allSalles.forEach(s -> System.out.println("   - " + s.getId() + ": " + s.getNom()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // ── Test Créneau ────────────────────────────────────────────────────────
+        CreneauDao creneauDao = new JdbcCreneauDao();
+        Creneau cr = new Creneau(
+                LocalDate.now(),
+                LocalTime.of(9, 0),
+                LocalTime.of(10, 30),
+                cours,
+                salle
         );
         try {
-            dao.create(u);
-            System.out.println("👤 Utilisateur créé avec ID = " + u.getId());
+            creneauDao.create(cr);
+            System.out.println("⏰ Créneau créé: ID=" + cr.getId()
+                    + ", date=" + cr.getDate()
+                    + ", cours=" + cr.getCours().getNom()
+                    + ", salle=" + cr.getSalle().getNom());
         } catch (SQLException e) {
-            System.err.println("❌ Erreur à l'insertion : " + e.getMessage());
+            e.printStackTrace();
+            return;
         }
 
-        // 4. Lire l'utilisateur par email
         try {
-            Utilisateur lu = dao.findByEmail("paul.martin@example.com");
-            if (lu != null) {
-                System.out.printf("🔍 Trouvé par email : ID=%d, %s %s, hash=%s%n",
-                        lu.getId(), lu.getFirstName(), lu.getLastName(), lu.getPassword());
-            } else {
-                System.err.println("❌ Utilisateur non trouvé par email !");
-            }
+            Creneau r1 = creneauDao.findById(cr.getId());
+            System.out.println("🔍 findById Créneau: " + r1.getDate() + " " + r1.getDebut());
+
+            List<Creneau> byCours = creneauDao.findByCours(cours.getId());
+            System.out.println("📋 findByCours (" + byCours.size() + "):");
+            byCours.forEach(c -> System.out.println("   - ID=" + c.getId() + ", salle=" + c.getSalle().getNom()));
+
+            List<Creneau> bySalle = creneauDao.findBySalle(salle.getId());
+            System.out.println("📋 findBySalle (" + bySalle.size() + "):");
+            bySalle.forEach(c -> System.out.println("   - ID=" + c.getId() + ", cours=" + c.getCours().getNom()));
+
         } catch (SQLException e) {
-            System.err.println("❌ Erreur à la lecture par email : " + e.getMessage());
+            e.printStackTrace();
         }
 
-        // 5. Lire l'utilisateur par ID
+        // ── Clean-up (optionnel) ─────────────────────────────────────────────────
         try {
-            Utilisateur lu2 = dao.findById(u.getId());
-            if (lu2 != null) {
-                System.out.printf("🔍 Trouvé par ID    : ID=%d, %s %s, hash=%s%n",
-                        lu2.getId(), lu2.getFirstName(), lu2.getLastName(), lu2.getPassword());
-            } else {
-                System.err.println("❌ Utilisateur non trouvé par ID !");
-            }
+            creneauDao.delete(cr.getId());
+            coursDao.delete(cours.getId());
+            salleDao.delete(salle.getId());
+            userDao.delete(user.getId());
+            System.out.println("🗑️ Tous les objets test supprimés.");
         } catch (SQLException e) {
-            System.err.println("❌ Erreur à la lecture par ID : " + e.getMessage());
-        }
-
-        // 6. Tester AuthService
-        AuthService authService = new AuthService();
-
-        // 6.a Cas réussi
-        try {
-            Utilisateur connecté = authService.login("paul.martin@example.com", "secret123");
-            System.out.println("✅ Auth réussi : " + connecté.getFirstName() + " " + connecté.getLastName());
-        } catch (AuthenticationException ex) {
-            System.err.println("❌ Auth failed: " + ex.getMessage());
-        }
-
-        // 6.b Mot de passe incorrect
-        try {
-            authService.login("paul.martin@example.com", "mauvaisMdp");
-            System.err.println("❌ Devrait avoir échoué avec mauvais mot de passe !");
-        } catch (AuthenticationException ex) {
-            System.out.println("🔒 Auth correct refusal: " + ex.getMessage());
-        }
-
-        // 6.c Email inconnu
-        try {
-            authService.login("inconnu@example.com", "quelqueMdp");
-            System.err.println("❌ Devrait avoir échoué avec email inconnu !");
-        } catch (AuthenticationException ex) {
-            System.out.println("🔒 Auth correct refusal: " + ex.getMessage());
+            e.printStackTrace();
         }
     }
 }

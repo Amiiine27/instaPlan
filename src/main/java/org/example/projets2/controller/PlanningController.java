@@ -2,6 +2,7 @@ package org.example.projets2.controller;
 
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
+import com.calendarfx.model.Entry;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,14 +12,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.projets2.dao.CreneauDao;
+import org.example.projets2.dao.JdbcCreneauDao;
+import org.example.projets2.model.Creneau;
 import org.example.projets2.util.Session;
 import org.example.projets2.model.Utilisateur;
 import com.calendarfx.view.CalendarView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PlanningController implements Initializable {
@@ -30,26 +37,46 @@ public class PlanningController implements Initializable {
     @FXML
     private CalendarView calendarView;
 
+    private final CreneauDao creneauDao = new JdbcCreneauDao();
+
+    // Référence au calendrier CalendarFX qui contiendra les entrées
+    private Calendar userCalendar;
+
 
     /**
      * Méthode appelée par JavaFX juste après le chargement du FXML.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 2) Récupérer l'utilisateur de la session
-        Utilisateur current = Session.getCurrentUser();
+        // 1) Afficher d’abord le message de bienvenue
+        displayWelcomeUser();
 
-        // 3) Mettre à jour le texte du Label
-        String prenom = current.getFirstName();
-        String nom    = current.getLastName();
-        welcomeLabel.setText(
-                "Planning — Connexion réussie ! Bienvenue " +
-                        prenom + " " + nom + " !"
-        );
-
+        // 2) Configurer ensuite le CalendarView (création de userCalendar)
         configureCalendarView();
-        startTimeUpdater();
 
+        // 3) Charger les créneaux dans userCalendar
+        try {
+            loadCreneaux();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Tu peux aussi afficher un message à l'utilisateur :
+            // welcomeLabel.setText("Erreur chargement planning : " + e.getMessage());
+        }
+
+        // 4) Lancer le thread de mise à jour date/heure
+        startTimeUpdater();
+    }
+
+    private void displayWelcomeUser() {
+        Utilisateur current = Session.getCurrentUser();
+        if (current != null) {
+            String prenom = current.getFirstName();
+            String nom    = current.getLastName();
+            welcomeLabel.setText(
+                    "Planning — Connexion réussie ! Bienvenue " +
+                            prenom + " " + nom + " !"
+            );
+        }
     }
 
     @FXML
@@ -69,8 +96,8 @@ public class PlanningController implements Initializable {
     }
 
     private void configureCalendarView() {
-        // 1) Création de calendriers
-        Calendar userCalendar = new Calendar("Mon planning");
+        // 1) Création du calendrier et affectation au champ
+        this.userCalendar = new Calendar("Mon planning");
         userCalendar.setStyle(Calendar.Style.STYLE1);
 
         Calendar meetings = new Calendar("Réunions");
@@ -104,5 +131,36 @@ public class PlanningController implements Initializable {
 
         updateThread.setDaemon(true);
         updateThread.start();
+    }
+
+    private void loadCreneaux() throws SQLException {
+        // Récupérer tous les créneaux
+        List<Creneau> tous = creneauDao.findAll();
+
+        // Si tu veux n’afficher que ceux de l’enseignant connecté :
+        int userId = Session.getCurrentUser().getId();
+
+        for (Creneau c : tous) {
+            // Par exemple : n’afficher que si c.getCours().getEnseignant().getId() == userId
+            if (c.getCours().getEnseignant().getId() != userId) {
+                continue;
+            }
+
+            // Créer l’entrée CalendarFX
+            Entry<Creneau> entry = new Entry<>(c.getCours().getNom());
+            // Intervalle du même jour, de début à fin
+            LocalDate date = c.getDate();
+            LocalTime d    = c.getDebut();
+            LocalTime f    = c.getFin();
+            entry.setInterval(
+                    LocalDateTime.of(date, d),
+                    LocalDateTime.of(date, f)
+            );
+            // On peut stocker l’objet métier pour y accéder plus tard
+            entry.setUserObject(c);
+
+            // Ajouter l’entrée au calendrier
+            userCalendar.addEntry(entry);
+        }
     }
 }

@@ -20,6 +20,12 @@ public class Utilisateur {
         this.email     = (firstName + "." +  lastName + "@example.com").toLowerCase();
         this.password  = password;
     }
+    /** Constructeur pour créer un nouvel utilisateur (avant insertion). */
+    public Utilisateur(String lastName, String firstName) {
+        this.lastName  = lastName;
+        this.firstName = firstName;
+        this.email     = (firstName + "." +  lastName + "@example.com").toLowerCase();
+    }
 
     // Getters et setters JavaBean
 

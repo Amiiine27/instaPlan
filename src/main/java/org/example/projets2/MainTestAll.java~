@@ -18,7 +18,7 @@ public class MainTestAll {
         try {
             // 2) Création d’un utilisateur de test
             UtilisateurDao userDao = new JdbcUtilisateurDao();
-            Utilisateur user = new Utilisateur("Teste", "User");
+            Utilisateur user = new Utilisateur("Test", "User");
             user.setPassword("pass123");
             userDao.create(user);
             System.out.println("👤 Utilisateur créé :");

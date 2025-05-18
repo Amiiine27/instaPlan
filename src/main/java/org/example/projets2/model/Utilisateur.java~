@@ -9,7 +9,6 @@ public class Utilisateur {
     private String firstName;
     private String email;
     private String password;
-    private Role role;
 
     /** Constructeur vide nécessaire au DAO. */
     public Utilisateur() { }
@@ -20,22 +19,15 @@ public class Utilisateur {
         this.firstName = firstName;
         this.email     = (firstName + "." +  lastName + "@example.com").toLowerCase();
         this.password  = password;
-        this.role = Role.ETUDIANT;  // Par défaut
     }
-
-    /** Constructeur avec rôle spécifié */
-    public Utilisateur(String lastName, String firstName, String password, Role role) {
-        this(lastName, firstName, password);
-        this.role = role;
-    }
-
     /** Constructeur pour créer un nouvel utilisateur (avant insertion). */
     public Utilisateur(String lastName, String firstName) {
         this.lastName  = lastName;
         this.firstName = firstName;
         this.email     = (firstName + "." +  lastName + "@example.com").toLowerCase();
-        this.role = Role.ETUDIANT;  // Par défaut
     }
+
+    // Getters et setters JavaBean
 
     public int getId() {
         return id;
@@ -70,24 +62,5 @@ public class Utilisateur {
     }
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public boolean isAdmin() {
-        return role == Role.ADMIN;
-    }
-
-    public boolean isEnseignant() {
-        return role == Role.ENSEIGNANT;
-    }
-
-    public boolean isEtudiant() {
-        return role == Role.ETUDIANT;
     }
 }

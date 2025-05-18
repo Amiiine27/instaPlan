@@ -1,5 +1,6 @@
 package org.example.projets2.dao;
 
+import org.example.projets2.model.Role;
 import org.example.projets2.model.Utilisateur;
 import org.example.projets2.util.Database;
 import org.mindrot.jbcrypt.BCrypt;
@@ -9,11 +10,11 @@ import java.sql.*;
 public class JdbcUtilisateurDao implements UtilisateurDao {
 
     private static final String INSERT_SQL =
-            "INSERT INTO Utilisateur(lastName, firstName, email, password) VALUES(?,?,?,?)";
+            "INSERT INTO Utilisateur(lastName, firstName, email, password, role) VALUES(?,?,?,?,?)";
     private static final String SELECT_BY_EMAIL =
-            "SELECT id, lastName, firstName, email, password FROM Utilisateur WHERE email = ?";
+            "SELECT id, lastName, firstName, email, password, role FROM Utilisateur WHERE email = ?";
     private static final String SELECT_BY_ID =
-            "SELECT id, lastName, firstName, email, password FROM Utilisateur WHERE id = ?";
+            "SELECT id, lastName, firstName, email, password, role FROM Utilisateur WHERE id = ?";
     private static final String DELETE_SQL =
             "DELETE FROM Utilisateur WHERE id = ?";
 
@@ -21,7 +22,7 @@ public class JdbcUtilisateurDao implements UtilisateurDao {
     public void create(Utilisateur u) throws SQLException {
         try (Connection c = Database.getConnection();
              PreparedStatement ps = c.prepareStatement(
-                     INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) { // Statement.RETURN_GENERATED_KEYS : indique qu’on souhaite récupérer la ou les clés auto-générées par la base (ici, la colonne id).
+                     INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, u.getLastName());
             ps.setString(2, u.getFirstName());
@@ -29,6 +30,8 @@ public class JdbcUtilisateurDao implements UtilisateurDao {
             // Hachage du mot de passe avant insertion
             String hashedPassword = BCrypt.hashpw(u.getPassword(), BCrypt.gensalt());
             ps.setString(4, hashedPassword);
+            // Ajout du rôle (stocké comme le nom de l'enum)
+            ps.setString(5, u.getRole().name());
             ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -53,6 +56,9 @@ public class JdbcUtilisateurDao implements UtilisateurDao {
                     u.setFirstName(rs.getString("firstName"));
                     u.setEmail(rs.getString("email"));
                     u.setPassword(rs.getString("password"));
+                    // Récupérer le rôle et le convertir en enum
+                    String roleStr = rs.getString("role");
+                    u.setRole(Role.valueOf(roleStr));
                     return u;
                 }
                 return null;
@@ -74,6 +80,9 @@ public class JdbcUtilisateurDao implements UtilisateurDao {
                     u.setFirstName(rs.getString("firstName"));
                     u.setEmail(rs.getString("email"));
                     u.setPassword(rs.getString("password"));
+                    // Récupérer le rôle et le convertir en enum
+                    String roleStr = rs.getString("role");
+                    u.setRole(Role.valueOf(roleStr));
                     return u;
                 }
                 return null;

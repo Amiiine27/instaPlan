@@ -42,13 +42,12 @@ public class PlanningController implements Initializable {
     // Référence au calendrier CalendarFX qui contiendra les entrées
     private Calendar userCalendar;
 
-
     /**
      * Méthode appelée par JavaFX juste après le chargement du FXML.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1) Afficher d’abord le message de bienvenue
+        // 1) Afficher d'abord le message de bienvenue
         displayWelcomeUser();
 
         // 2) Configurer ensuite le CalendarView (création de userCalendar)
@@ -71,10 +70,19 @@ public class PlanningController implements Initializable {
         Utilisateur current = Session.getCurrentUser();
         if (current != null) {
             String prenom = current.getFirstName();
-            String nom    = current.getLastName();
+            String nom = current.getLastName();
+            String roleStr = "";
+
+            if (current.isAdmin()) {
+                roleStr = " (Administrateur)";
+            } else if (current.isEnseignant()) {
+                roleStr = " (Enseignant)";
+            } else if (current.isEtudiant()) {
+                roleStr = " (Étudiant)";
+            }
+
             welcomeLabel.setText(
-                    "Planning — Connexion réussie ! Bienvenue " +
-                            prenom + " " + nom + " !"
+                    "Planning — Bienvenue " + prenom + " " + nom + roleStr
             );
         }
     }
@@ -136,31 +144,96 @@ public class PlanningController implements Initializable {
     private void loadCreneaux() throws SQLException {
         // Récupérer tous les créneaux
         List<Creneau> tous = creneauDao.findAll();
+        System.out.println("Nombre total de créneaux trouvés: " + tous.size());
 
-        // Si tu veux n’afficher que ceux de l’enseignant connecté :
-        int userId = Session.getCurrentUser().getId();
+        // Récupérer l'utilisateur connecté
+        Utilisateur currentUser = Session.getCurrentUser();
+        System.out.println("Utilisateur connecté: " + currentUser.getFirstName() + " " + currentUser.getLastName());
+        System.out.println("ID utilisateur: " + currentUser.getId());
+        System.out.println("Rôle utilisateur: " + currentUser.getRole());
 
+        int displayedCount = 0;
         for (Creneau c : tous) {
-            // Par exemple : n’afficher que si c.getCours().getEnseignant().getId() == userId
-            if (c.getCours().getEnseignant().getId() != userId) {
+            System.out.println("\nAnalyse créneau #" + c.getId());
+            System.out.println("  Date du créneau: " + c.getDate());
+            System.out.println("  Heure de début: " + c.getDebut());
+            System.out.println("  Heure de fin: " + c.getFin());
+            System.out.println("  Cours: " + c.getCours().getNom());
+            System.out.println("  Enseignant du cours: " + c.getCours().getEnseignant().getFirstName() + " " + c.getCours().getEnseignant().getLastName());
+            System.out.println("  ID enseignant: " + c.getCours().getEnseignant().getId());
+
+            // Logique de filtrage selon le rôle
+            boolean shouldDisplay = false;
+
+            if (currentUser.isAdmin()) {
+                System.out.println("  -> Utilisateur est ADMIN, affichage permis");
+                shouldDisplay = true;
+            } else if (currentUser.isEnseignant()) {
+                shouldDisplay = c.getCours().getEnseignant().getId() == currentUser.getId();
+                System.out.println("  -> Utilisateur est ENSEIGNANT, affichage " + (shouldDisplay ? "permis" : "refusé"));
+            } else if (currentUser.isEtudiant()) {
+                System.out.println("  -> Utilisateur est ETUDIANT, affichage permis");
+                shouldDisplay = true;
+            } else {
+                System.out.println("  -> Rôle non reconnu: " + currentUser.getRole());
+            }
+
+            if (!shouldDisplay) {
+                System.out.println("  => Créneau ignoré");
                 continue;
             }
 
-            // Créer l’entrée CalendarFX
+            System.out.println("  => Ajout du créneau au calendrier");
+            displayedCount++;
+
+            // Créer l'entrée CalendarFX
             Entry<Creneau> entry = new Entry<>(c.getCours().getNom());
+
+            // Ajouter un préfixe au titre selon le rôle
+            if (currentUser.isAdmin()) {
+                entry.setTitle("[ADMIN] " + c.getCours().getNom());
+            } else if (currentUser.isEnseignant()) {
+                entry.setTitle("[PROF] " + c.getCours().getNom());
+            }
+
             // Intervalle du même jour, de début à fin
             LocalDate date = c.getDate();
-            LocalTime d    = c.getDebut();
-            LocalTime f    = c.getFin();
-            entry.setInterval(
-                    LocalDateTime.of(date, d),
-                    LocalDateTime.of(date, f)
-            );
-            // On peut stocker l’objet métier pour y accéder plus tard
+            LocalTime d = c.getDebut();
+            LocalTime f = c.getFin();
+
+            LocalDateTime startDateTime = LocalDateTime.of(date, d);
+            LocalDateTime endDateTime = LocalDateTime.of(date, f);
+
+            System.out.println("  Setting event interval: " + startDateTime + " to " + endDateTime);
+
+            entry.setInterval(startDateTime, endDateTime);
+
+            // Ajouter la salle comme localisation
+            entry.setLocation(c.getSalle().getNom());
+
+            // On peut stocker l'objet métier pour y accéder plus tard
             entry.setUserObject(c);
 
-            // Ajouter l’entrée au calendrier
+            // Ajouter l'entrée au calendrier
             userCalendar.addEntry(entry);
+            System.out.println("  Entry added to calendar: " + entry.getTitle());
+        }
+
+        System.out.println("\nTotal de créneaux affichés: " + displayedCount);
+
+        // Vérifier si le calendrier contient des entrées
+        System.out.println("Nombre d'entrées dans le calendrier: " + userCalendar.findEntries(String.valueOf(LocalDate.now())).size());
+
+        // Si aucun créneau n'est affiché, ajoutons un événement de test
+        if (displayedCount == 0) {
+            System.out.println("Aucun créneau trouvé - Ajout d'un événement de test");
+            Entry<String> testEntry = new Entry<>("ÉVÉNEMENT TEST");
+            testEntry.setInterval(
+                    LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0)),
+                    LocalDateTime.of(LocalDate.now(), LocalTime.of(13, 0))
+            );
+            userCalendar.addEntry(testEntry);
+            System.out.println("Événement de test ajouté au calendrier");
         }
     }
 }

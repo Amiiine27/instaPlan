@@ -26,13 +26,13 @@ public class MainTestAll {
             System.out.println("    password = pass123");
 
             // Créer des utilisateurs avec différents rôles
-            Utilisateur admin = new Utilisateur("Admin1", "User", "admin123", Role.ADMIN);
+            Utilisateur admin = new Utilisateur("Admin", "User", "admin123", Role.ADMIN);
             userDao.create(admin);
 
-            Utilisateur enseignant = new Utilisateur("Prof1", "User", "prof123", Role.ENSEIGNANT);
+            Utilisateur enseignant = new Utilisateur("Prof", "User", "prof123", Role.ENSEIGNANT);
             userDao.create(enseignant);
 
-            Utilisateur etudiant = new Utilisateur("Student1", "User", "student123", Role.ETUDIANT);
+            Utilisateur etudiant = new Utilisateur("Student", "User", "student123", Role.ETUDIANT);
             userDao.create(etudiant);
 
             // Afficher les informations sur les utilisateurs créés

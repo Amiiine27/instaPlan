@@ -23,7 +23,10 @@ public class DatabaseInitializer {
             "/db/init_cours.sql",
             "/db/init_salle.sql",
             "/db/init_creneau.sql",
-            "/db/init_notification.sql"  // Ajout du script pour les notifications
+            "/db/init_notification.sql",
+            "/db/init_groupe.sql",
+            "/db/init_groupe_etudiant.sql",
+            "/db/init_groupe_creneau.sql"
     );
 
     /**

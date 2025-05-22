@@ -7,6 +7,8 @@
 <?import javafx.scene.layout.Region?>
 <?import com.calendarfx.view.CalendarView?>
 
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ComboBox?>
 <BorderPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.projets2.controller.PlanningController"
@@ -42,6 +44,24 @@
                     text="Déconnexion"
                     onAction="#onLogoutClicked"
                     styleClass="disconnect-button"/>
+        </HBox>
+
+        <!-- Nouvelle barre de filtrage -->
+        <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10; -fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <Label text="Filtrer par:" />
+
+            <Label text="Enseignant:" />
+            <ComboBox fx:id="enseignantFilterComboBox" prefWidth="200" promptText="Tous les enseignants" />
+
+            <Label text="Salle:" />
+            <ComboBox fx:id="salleFilterComboBox" prefWidth="180" promptText="Toutes les salles" />
+
+            <Label text="Cours:" />
+            <ComboBox fx:id="coursFilterComboBox" prefWidth="220" promptText="Tous les cours" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button fx:id="clearFiltersButton" text="Réinitialiser filtres" onAction="#onClearFiltersClicked" />
         </HBox>
     </top>
 

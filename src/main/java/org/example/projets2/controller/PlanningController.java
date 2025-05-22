@@ -7,16 +7,16 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.projets2.dao.CreneauDao;
-import org.example.projets2.dao.JdbcCreneauDao;
-import org.example.projets2.model.Creneau;
+import javafx.util.StringConverter;
+import org.example.projets2.dao.*;
+import org.example.projets2.model.*;
 import org.example.projets2.util.Session;
-import org.example.projets2.model.Utilisateur;
 import com.calendarfx.view.CalendarView;
 
 import java.io.IOException;
@@ -25,8 +25,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class PlanningController implements Initializable {
 
@@ -50,6 +52,25 @@ public class PlanningController implements Initializable {
 
     @FXML private Button notificationsButton;
 
+    // Ajouter ces déclarations avec les autres
+    @FXML private ComboBox<Utilisateur> enseignantFilterComboBox;
+    @FXML private ComboBox<Salle> salleFilterComboBox;
+    @FXML private ComboBox<Cours> coursFilterComboBox;
+    @FXML private Button clearFiltersButton;
+
+    // Variables pour stocker les valeurs filtrées
+    private Utilisateur selectedEnseignant = null;
+    private Salle selectedSalle = null;
+    private Cours selectedCours = null;
+
+    // DAOs nécessaires
+    private final CoursDao coursDao = new JdbcCoursDao();
+    private final SalleDao salleDao = new JdbcSalleDao();
+    private final UtilisateurDao utilisateurDao = new JdbcUtilisateurDao();
+
+    // Liste originale des créneaux avant filtrage
+    private List<Creneau> allCreneaux = new ArrayList<>();
+
     /**
      * Méthode appelée par JavaFX juste après le chargement du FXML.
      */
@@ -68,6 +89,11 @@ public class PlanningController implements Initializable {
 
         // 2) Configurer ensuite le CalendarView (création de userCalendar)
         configureCalendarView();
+
+        configureFilterComboBoxes();
+
+        setupFilterListeners();
+
 
         // 3) Charger les créneaux dans userCalendar
         try {
@@ -260,6 +286,8 @@ public class PlanningController implements Initializable {
         }
 
         System.out.println("\nTotal de créneaux affichés: " + displayedCount);
+
+        applyFilters();
     }
 
     @FXML
@@ -339,5 +367,177 @@ public class PlanningController implements Initializable {
             e.printStackTrace();
             welcomeLabel.setText("Erreur lors du chargement des notifications : " + e.getMessage());
         }
+    }
+
+    /**
+     * Configure les ComboBox de filtrage avec les données appropriées.
+     */
+    private void configureFilterComboBoxes() {
+        try {
+            // Configurer le filtre par enseignant
+            List<Utilisateur> enseignants = utilisateurDao.findAll().stream()
+                    .filter(u -> u.getRole() == Role.ENSEIGNANT || u.getRole() == Role.ADMIN)
+                    .collect(Collectors.toList());
+
+            enseignantFilterComboBox.setConverter(new StringConverter<Utilisateur>() {
+                @Override
+                public String toString(Utilisateur user) {
+                    if (user == null) return "Tous les enseignants";
+                    return user.getFirstName() + " " + user.getLastName();
+                }
+
+                @Override
+                public Utilisateur fromString(String string) {
+                    return null;
+                }
+            });
+            enseignantFilterComboBox.getItems().add(null); // Option "Tous"
+            enseignantFilterComboBox.getItems().addAll(enseignants);
+            enseignantFilterComboBox.setValue(null);
+
+            // Configurer le filtre par salle
+            List<Salle> salles = salleDao.findAll();
+            salleFilterComboBox.setConverter(new StringConverter<Salle>() {
+                @Override
+                public String toString(Salle salle) {
+                    if (salle == null) return "Toutes les salles";
+                    return salle.getNom();
+                }
+
+                @Override
+                public Salle fromString(String string) {
+                    return null;
+                }
+            });
+            salleFilterComboBox.getItems().add(null); // Option "Toutes"
+            salleFilterComboBox.getItems().addAll(salles);
+            salleFilterComboBox.setValue(null);
+
+            // Configurer le filtre par cours
+            List<Cours> cours = coursDao.findAll();
+            coursFilterComboBox.setConverter(new StringConverter<Cours>() {
+                @Override
+                public String toString(Cours cours) {
+                    if (cours == null) return "Tous les cours";
+                    return cours.getNom();
+                }
+
+                @Override
+                public Cours fromString(String string) {
+                    return null;
+                }
+            });
+            coursFilterComboBox.getItems().add(null); // Option "Tous"
+            coursFilterComboBox.getItems().addAll(cours);
+            coursFilterComboBox.setValue(null);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            welcomeLabel.setText("Erreur lors du chargement des filtres : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Configure les écouteurs sur les ComboBox pour filtrer automatiquement.
+     */
+    private void setupFilterListeners() {
+        enseignantFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            selectedEnseignant = newVal;
+            applyFilters();
+        });
+
+        salleFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            selectedSalle = newVal;
+            applyFilters();
+        });
+
+        coursFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            selectedCours = newVal;
+            applyFilters();
+        });
+    }
+
+    /**
+     * Méthode appelée lors du clic sur le bouton de réinitialisation des filtres.
+     */
+    @FXML
+    private void onClearFiltersClicked() {
+        enseignantFilterComboBox.setValue(null);
+        salleFilterComboBox.setValue(null);
+        coursFilterComboBox.setValue(null);
+
+        selectedEnseignant = null;
+        selectedSalle = null;
+        selectedCours = null;
+
+        applyFilters();
+    }
+
+    /**
+     * Applique les filtres sélectionnés aux créneaux affichés dans le calendrier.
+     */
+    private void applyFilters() {
+        // Effacer tous les événements existants
+        userCalendar.clear();
+
+        // Appliquer les filtres sur tous les créneaux
+        for (Creneau creneau : allCreneaux) {
+            // Vérifier les filtres
+            boolean matchesEnseignant = selectedEnseignant == null ||
+                    (creneau.getCours().getEnseignant() != null &&
+                            creneau.getCours().getEnseignant().getId() == selectedEnseignant.getId());
+
+            boolean matchesSalle = selectedSalle == null ||
+                    (creneau.getSalle() != null &&
+                            creneau.getSalle().getId() == selectedSalle.getId());
+
+            boolean matchesCours = selectedCours == null ||
+                    (creneau.getCours() != null &&
+                            creneau.getCours().getId() == selectedCours.getId());
+
+            // Si le créneau correspond à tous les filtres actifs, l'ajouter au calendrier
+            if (matchesEnseignant && matchesSalle && matchesCours) {
+                // Vérifier également les permissions de l'utilisateur (comme dans loadCreneaux)
+                Utilisateur currentUser = Session.getCurrentUser();
+                boolean shouldDisplay = false;
+
+                if (currentUser.isAdmin()) {
+                    shouldDisplay = true;
+                } else if (currentUser.isEnseignant()) {
+                    shouldDisplay = creneau.getCours().getEnseignant().getId() == currentUser.getId();
+                } else if (currentUser.isEtudiant()) {
+                    shouldDisplay = true;
+                }
+
+                if (shouldDisplay) {
+                    addCreneauToCalendar(creneau);
+                }
+            }
+        }
+    }
+
+    /**
+     * Ajoute un créneau au calendrier.
+     */
+    private void addCreneauToCalendar(Creneau creneau) {
+        Entry<Creneau> entry = new Entry<>(creneau.getCours().getNom());
+
+        // Intervalle du même jour, de début à fin
+        LocalDate date = creneau.getDate();
+        LocalTime debut = creneau.getDebut();
+        LocalTime fin = creneau.getFin();
+        entry.setInterval(
+                LocalDateTime.of(date, debut),
+                LocalDateTime.of(date, fin)
+        );
+
+        // Ajouter des informations
+        entry.setLocation(creneau.getSalle().getNom());
+
+        // Stocker le créneau pour y accéder plus tard
+        entry.setUserObject(creneau);
+
+        // Ajouter l'entrée au calendrier
+        userCalendar.addEntry(entry);
     }
 }

@@ -1,6 +1,7 @@
 package org.example.projets2.dao;
 
 import org.example.projets2.model.Cours;
+import org.example.projets2.model.Utilisateur;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,4 +35,9 @@ public interface CoursDao {
      * Supprime un cours d’après son identifiant.
      */
     void delete(int id) throws SQLException;
+
+    void addEtudiant(int coursId, int etudiantId) throws SQLException;
+    void removeEtudiant(int coursId, int etudiantId) throws SQLException;
+    List<Utilisateur> findEtudiantsByCours(int coursId) throws SQLException;
+    List<Cours> findCoursByEtudiant(int etudiantId) throws SQLException;
 }

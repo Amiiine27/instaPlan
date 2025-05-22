@@ -59,3 +59,19 @@
 .notifications-button:hover {
     -fx-background-color: #8600ad;  /* rouge plus sombre au survol */
 }
+
+/* Styles pour la barre de filtres */
+.combo-box {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #cccccc;
+    -fx-background-color: white;
+}
+
+.combo-box:focused {
+    -fx-border-color: #4e54c8;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 5 10;
+}

@@ -1,0 +1,6 @@
+-- init_groupe.sql
+CREATE TABLE IF NOT EXISTS Groupe (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+nom TEXT NOT NULL,
+description TEXT
+);
